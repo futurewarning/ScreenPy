@@ -151,3 +151,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# sense2vec files
+s2v_old/
+*.tar.gz
