@@ -111,7 +111,7 @@ def segmentize(tuple_lines):
 
 		elif typ in {'direction', 'dialogue'}:
 			# change to new segment when we go direction -> dialogue
-			if typ is 'direction' and previous is 'dialogue':
+			if typ == 'direction' and previous == 'dialogue':
 
 				# save the ongoing seg if it's non empty
 				if current_seg is not None:
@@ -162,12 +162,12 @@ def master_segmentize(segs):
 			if head_dict['terior'] is not None:
 				if len(master_seg) > 0:
 					master_segs.append(master_seg)
-				master_seg = [seg(head_type, head_dict, fleshy_text).__dict__]
+				master_seg = [seg(head_type, head_dict, fleshy_text)._asdict()]
 			else:
-				master_seg.append(seg(head_type, head_dict, fleshy_text).__dict__)
+				master_seg.append(seg(head_type, head_dict, fleshy_text)._asdict())
 
 		elif head_type in {'speaker/title', 'transition'}:
-			master_seg.append(seg(head_type, {head_type: head_text}, fleshy_text).__dict__)
+			master_seg.append(seg(head_type, {head_type: head_text}, fleshy_text)._asdict())
 
 	if len(master_seg) > 0:
 		master_segs.append(master_seg)
@@ -217,7 +217,7 @@ def assemble_lines(text_lines):
 
 			if is_caps:
 				if len(relevant_text) > 0 and relevant_text[-1] in {'.', ';'}:
-					if len(indent_tuples) > 0 and indent_tuples[-1][-1] not in {'.', ';'} and indent_tuples[-1][0] is 'direction':
+					if len(indent_tuples) > 0 and indent_tuples[-1][-1] not in {'.', ';'} and indent_tuples[-1][0] == 'direction':
 						# then its probably the end of a sentence
 						indent_tuples.append(('direction', leading_indent, relevant_text))
 						continue
@@ -294,12 +294,7 @@ def annotate(screenplay):
 	return masta
 
 if __name__ == '__main__':
-
-	# with open('imsdb_raw_nov_2015//Sci-Fi/abyssthe.txt') as fn:
-	# 	play = fn.read()
-
-	# screenplay = 'indianajonesandtheraidersofthelostark.txt'
-	screenplay = 'imsdb_raw_nov_2015/Western/truegrit.txt'
+	screenplay = 'imsdb_raw_nov_2015/Adventure/indianajonesandtheraidersofthelostark.txt'
 	with open(screenplay, 'r') as fn:
 		play = fn.read()
 
@@ -310,13 +305,5 @@ if __name__ == '__main__':
 	segs = segmentize(line_tups)
 	masta = master_segmentize(segs)
 
-	# with open('test.json', 'w') as fp:
-	# 	json.dump(masta, fp, indent=4)
-
-	# pickle.dump(masta, open('ij.pkl', 'wb'))
-
-	# with open('indianajonesandtheraidersofthelostark.json', 'w') as fp:
-	with open('truegrit.json', 'w') as fp:
+	with open('indianajonesandtheraidersofthelostark.json', 'w') as fp:
 		json.dump(masta, fp, indent=4)
-
-

@@ -1,6 +1,7 @@
 from dateutil.parser import parse as dateparse
 from screenpy_vars import *
 import sys
+import sense2vec
 DO_TEST = 0
 DO_PRINT = 0
 
@@ -9,13 +10,7 @@ def Log(message):
 	if DO_PRINT:
 		print(message)
 
-
-# if 'sense2vec' not in sys.modules:
-import sense2vec
-print('loading sense2vec')
-
-s2v_model = sense2vec.load()
-print('done loading')
+s2v_model = sense2vec.Sense2Vec().from_disk('s2v_old')
 
 
 def loadSpacy():
@@ -27,7 +22,9 @@ def loadSpacy():
 
 def sense2vec_sim(token1, token2):
 	try:
-		return s2v_model.data.similarity(s2v_model[token1][1], s2v_model[token2][1])
+		if (s2v_model[token1] is None or s2v_model[token2] is None):
+			return 0
+		return s2v_model.similarity(token1, token2)
 	except ValueError:
 		return 0
 	except KeyError:
@@ -523,4 +520,3 @@ if __name__ == '__main__':
 # 	with open('headings.txt', 'w') as head:
 # 		for line in look_at_lines:
 # 			head.write('{}\n'.format(line))
-
